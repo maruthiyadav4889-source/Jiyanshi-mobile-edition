@@ -1,2 +1,2 @@
-# Jiyanshi-mobile-edition
-MY JIYANSHI AI ASSISTANCE 
+# Jarvis-mobile-edition
+MY Jarvis AI ASSISTANCE 

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>J.A.R.V.I.S Autonomous System</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Arc Reactor -->
+    <div class="arc-reactor-wrapper">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="core-center">J</div>
+    </div>
+
+    <!-- Titles -->
+    <div class="title-group">
+      <div class="main-title">J.A.R.V.I.S</div>
+      <div class="sub-title">AUTONOMOUS DEVICE PROTOCOL SYSTEM</div>
+    </div>
+
+    <!-- Telemetry Cards (Gateway removed, replaced with Protocol Status) -->
+    <div class="status-list">
+      <div class="status-card">
+        <span class="status-icon">⚡</span>
+        <div class="status-info">
+          <span class="status-label">POWER CELL</span>
+          <span class="status-value" id="batteryDisplay">CHECKING TELEMETRY...</span>
+        </div>
+      </div>
+      
+      <div class="status-card">
+        <span class="status-icon">📱</span>
+        <div class="status-info">
+          <span class="status-label">LOCAL PROTOCOLS</span>
+          <span class="status-value">HARDWARE & SENSORS ACTIVE</span>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <span class="status-icon">🛡️</span>
+        <div class="status-info">
+          <span class="status-label">NEURAL ENGINE</span>
+          <span class="status-value">ONLINE (STANDALONE &bull; NO KEY NEEDED)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Bar -->
+    <div class="preset-scroll">
+      <button class="preset-btn" onclick="openCameraDirectly()">📸 Camera</button>
+      <button class="preset-btn" onclick="triggerPaymentPrompt()">💳 Pay Mode</button>
+      <button class="preset-btn" onclick="executeQuickCommand('Today weather')">⛅ Weather</button>
+      <button class="preset-btn" onclick="executeQuickCommand('Where am I')">📍 GPS</button>
+      <button class="preset-btn" onclick="executeQuickCommand('Flashlight on')">🔦 Torch</button>
+      <button class="preset-btn" onclick="executeQuickCommand('Open WhatsApp')">💬 WhatsApp</button>
+    </div>
+
+    <!-- Terminal Panel -->
+    <div class="terminal-panel">
+      <div class="terminal-header">
+        <span>J.A.R.V.I.S TERMINAL</span>
+        <div class="live-tag">
+          <div class="live-dot"></div>
+          <span id="liveIndicator">LIVE</span>
+        </div>
+      </div>
+
+      <!-- Feed Container -->
+      <div class="chat-container" id="chatFeed">
+        <div class="chat-bubble jarvis-msg">
+          <strong>J.A.R.V.I.S:</strong> All local hardware protocols, atmospheric sensors, and media systems online. Tap the 💳 payment icon below to trigger UPI transfers, or direct me by voice or text, Boss.
+        </div>
+      </div>
+
+      <!-- Image Preview -->
+      <div id="imagePreviewContainer" class="image-preview" style="display: none;">
+        <img id="previewImg" src="" alt="Thumbnail" />
+        <span id="imageName">Attachment ready</span>
+        <button id="removeImageBtn">&times;</button>
+      </div>
+
+      <!-- Input Controls Row with Dedicated Payment Icon Mode -->
+      <div class="input-row">
+        <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" />
+
+        <!-- Camera / Optical Icon Button -->
+        <button class="action-btn file-btn" id="camBtn" title="Camera / Scan">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z"/>
+            <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+          </svg>
+        </button>
+
+        <!-- Payment Mode Icon Button -->
+        <button class="action-btn pay-btn" id="payModeBtn" title="UPI Payment Mode">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+          </svg>
+        </button>
+
+        <input type="text" id="userInput" class="chat-input" placeholder="Ask, calculate, or issue command..." autocomplete="off" />
+        
+        <!-- Microphone Button -->
+        <button class="action-btn mic-btn" id="micBtn" title="Voice Input">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+          </svg>
+        </button>
+
+        <!-- Send Button -->
+        <button class="action-btn send-btn" id="sendBtn" title="Send Directive">
+          <svg viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      J.A.R.V.I.S MOBILE EDITION &middot; LOCAL PROTOCOLS ONLINE
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
